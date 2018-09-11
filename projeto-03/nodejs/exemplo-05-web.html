@@ -1,0 +1,66 @@
+<!--
+   Arduino Day Manaus 2018
+	Oficina:     Criando Coisas Inteligentes com NodeJS e Arduino
+	Facilitador: Prof. Orlewilson B. Maia
+	Autor:       Orlewilson B. Maia
+	Data:        31/03/2018
+	Descrição:   Ligar/desligar 3 LEDs usando página web 
+-->
+
+<!DOCTYPE html>
+<html>
+   <head>
+      <title>Exemplo 05 - Ligar/desligar 3 LEDs usado pagina web</title>
+
+      <!-- importando bibliotecas -->
+      <script src="/socket.io/socket.io.js"></script>
+      
+      <!-- script para comunicar com o servidor -->
+      <script>
+         // criando socket na porta 8080
+         var socket = io('http://localhost:8080');
+         
+         // aguarda alguma resposta do servidor
+         socket.on('respostaLed', function (data) {
+
+            // atualiza na página web se o LED foi ligado ou desligado
+            
+            if (data == 'ligado1' || data == 'desligado1'){
+               document.getElementById('estadoLed1').innerHTML = data;
+            } else if (data == 'ligado2' || data == 'desligado2'){
+               document.getElementById('estadoLed2').innerHTML = data;
+            } else if (data == 'ligado3' || data == 'desligado3'){
+               document.getElementById('estadoLed3').innerHTML = data;
+            }             
+         });
+
+         // função para ligar LED
+         function ligar(numLed){
+            // envia mensagem para ligar LED
+            socket.emit('ligar',numLed);
+         }
+
+         // função para desligar LED
+         function desligar(numLed){
+            // envia mensagem para desligar LED
+            socket.emit('desligar',numLed);
+         }
+      </script>
+
+   </head>
+   <body>
+      <h1>Ligar/desligar LED usado pagina web</h1>
+      <p>Estado do LED 1: <span id="estadoLed1">não sei</span></p>
+      <p>Estado do LED 2: <span id="estadoLed2">não sei</span></p>
+      <p>Estado do LED 3: <span id="estadoLed3">não sei</span></p>
+      <br/>
+      <button type="button" onclick="ligar(1)">Ligar LED 1</button>
+      <button type="button" onclick="desligar(1)">Desligar LED 1</button>
+      <br/>
+      <button type="button" onclick="ligar(2)">Ligar LED 2</button>
+      <button type="button" onclick="desligar(2)">Desligar LED 2</button>
+      <br/>
+      <button type="button" onclick="ligar(3)">Ligar LED 3</button>
+      <button type="button" onclick="desligar(3)">Desligar LED 3</button>
+   </body>
+</html> 
