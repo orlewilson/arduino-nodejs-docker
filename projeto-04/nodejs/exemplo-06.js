@@ -3,7 +3,7 @@
   Facilitador:        Prof. Orlewilson Bentes Maia
   Autor:              Seu nome
   Data Criacao:       15/09/2018
-  Descricao:          Simular acesso com RFID usando página web com NodeJS
+  Descricao:          Simular acesso com RFID com NodeJS
 */
 
 // bibliotecas
@@ -27,5 +27,26 @@ var port = new SerialPort('/dev/ttyACM0', {
 });
 
 const parser = port.pipe(new Readline({delimiter: '\r\n'}))
-// lê o conteúdo da porta serial
-parser.on('data', console.log);
+
+// servidor escutando na porta 8080
+server.listen(8080);
+
+// mensagem no console
+console.log('Servidor rodando em http://localhost:8080/');
+
+
+// informando a página HTML que será vista pelo usuário
+app.get('/', function (req, res) {
+	res.sendFile(__dirname + '/exemplo-06-web.html');
+});
+
+// quando alguém conectar com o servidor por meio de socket
+io.on('connection', function (socket) {
+    
+    // lê o conteúdo da porta serial
+	parser.on('data', function (data) {
+    	console.log(data);
+    	// enviar resposta da leitura do cartão para a página web
+    	socket.emit('respostaRFID', data);
+	});
+});
