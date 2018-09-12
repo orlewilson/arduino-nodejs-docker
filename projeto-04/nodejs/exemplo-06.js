@@ -19,7 +19,6 @@ var io = require('socket.io')(server);
 // para acesso serial a placa Arduino
 var SerialPort = require('serialport');
 const Readline = require('@serialport/parser-readline')
-//var SerialPort = serialport.SerialPort;
 
 // abre a porta de comunicação
 var port = new SerialPort('/dev/ttyACM0', {
