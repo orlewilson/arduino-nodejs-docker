@@ -42,7 +42,7 @@ app.get('/', function (req, res) {
 // quando alguém conectar com o servidor por meio de socket
 io.on('connection', function (socket) {
     
-    // lê o conteúdo da porta serial
+  // lê o conteúdo da porta serial
 	parser.on('data', function (data) {
     	console.log(data);
     	// enviar resposta da leitura do cartão para a página web

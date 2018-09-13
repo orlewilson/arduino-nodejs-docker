@@ -29,19 +29,13 @@ void atraso (int n){
 // Função para mostrar valores lidos dos sensores no LCD
 void mostrarValores(float temperatura, float umidade){
   
-  Serial.println("Temperatura: " + String(temperatura));
-  Serial.println();
-  Serial.println("Umidade: " + String(umidade));
-  Serial.println();
+  Serial.println("{\"Temperatura\": \"" + String(temperatura) + "\", \"Umidade\": \"" + String(umidade) + "\"}");
 }
 
 void setup(){
 
   // inicia a porta serial
   Serial.begin(9600);
-
-  Serial.println("Lendo valores");
-  Serial.println();
 }
  
 void loop(){
@@ -49,7 +43,7 @@ void loop(){
   valorUmidade = dht.readHumidity();
   valorTemp = dht.readTemperature();
 
-  // mostra os valores no LCD
+  // envia valores para a porta serial
   mostrarValores(valorTemp, valorUmidade);
 
   atraso(1);

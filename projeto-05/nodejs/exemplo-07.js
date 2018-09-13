@@ -21,7 +21,7 @@ var SerialPort = require('serialport');
 const Readline = require('@serialport/parser-readline')
 
 // abre a porta de comunicação
-var port = new SerialPort('/dev/ttyACM0', {
+var port = new SerialPort('COM14', {
   baudRate: 9600
 });
 
@@ -33,19 +33,30 @@ server.listen(8080);
 // mensagem no console
 console.log('Servidor rodando em http://localhost:8080/');
 
-
 // informando a página HTML que será vista pelo usuário
-app.get('/', function (req, res) {
-  res.sendFile(__dirname + '/exemplo-07-web.html');
+
+var express = require("express");
+
+var router = express.Router();
+
+router.use(function (req,res,next) {
+  console.log("/" + req.method);
+  next();
 });
+
+app.use("/",router);
+
+app.use(express.static(__dirname + '/views/'));
+
 
 // quando alguém conectar com o servidor por meio de socket
 io.on('connection', function (socket) {
     
-    // lê o conteúdo da porta serial
+  // lê o conteúdo da porta serial
   parser.on('data', function (data) {
       console.log(data);
       // enviar resposta da leitura do cartão para a página web
-      socket.emit('respostaRFID', data);
+      socket.emit('respostaTemp', data);
+      socket.emit('respostaUmi', data);
   });
 });
