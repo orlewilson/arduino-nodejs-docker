@@ -1,0 +1,35 @@
+<!--
+  Como Criar Coisas Inteligentes com Arduino, NodeJS e Docker - Boa Vista (RR)
+  Facilitador:        Prof. Orlewilson Bentes Maia
+  Autor:              Seu nome
+  Data Criacao:       15/09/2018
+  Descricao:          Simular acesso com RFID com NodeJS
+-->
+
+<!DOCTYPE html>
+<html>
+   <head>
+      <title>Simular acesso com RFID com NodeJS</title>
+
+      <!-- importando bibliotecas -->
+      <script src="/socket.io/socket.io.js"></script>
+      
+      <!-- script para comunicar com o servidor -->
+      <script>
+         // criando socket na porta 8080
+         var socket = io('http://localhost:8080');
+         
+         // aguarda alguma resposta do servidor
+         socket.on('respostaRFID', function (data) {
+            // atualiza na página web se o LED foi ligado ou desligado
+            document.getElementById('respostaRFID').innerHTML += data + '<br/>'; 
+         });
+      </script>
+
+   </head>
+   <body>
+      <h1>Simular acesso com RFID com NodeJS</h1>
+      <p>Resposta leitura: <span id="respostaRFID">não sei</span></p>
+      <br/>
+   </body>
+</html> 
