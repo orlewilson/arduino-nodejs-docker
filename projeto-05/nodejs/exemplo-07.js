@@ -20,8 +20,13 @@ var io = require('socket.io')(server);
 var SerialPort = require('serialport');
 const Readline = require('@serialport/parser-readline')
 
-// abre a porta de comunicação
-var port = new SerialPort('COM14', {
+// abre a porta de comunicação (windows)
+//var port = new SerialPort('COM14', {
+//  baudRate: 9600
+//});
+
+// abre a porta de comunicação (linux)
+var port = new SerialPort('/dev/ttyACM0', {
   baudRate: 9600
 });
 
