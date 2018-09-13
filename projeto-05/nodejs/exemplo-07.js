@@ -16,42 +16,36 @@ var server = require('http').Server(app);
 // para criar conexão socket
 var io = require('socket.io')(server);
 
-// para acessar placa arduino
-var five = require("johnny-five");  
+// para acesso serial a placa Arduino
+var SerialPort = require('serialport');
+const Readline = require('@serialport/parser-readline')
 
-// indica a porta onde está conectada a placa Arduino
-//var board = new five.Board({port: "COM5"}); // manual
-var board = new five.Board(); // automático
+// abre a porta de comunicação
+var port = new SerialPort('/dev/ttyACM0', {
+  baudRate: 9600
+});
 
-// quando a placa estiver pronta, execute.
-board.on("ready", function() {  
-   
-  // servidor escutando na porta 8080
-  server.listen(8080);
+const parser = port.pipe(new Readline({delimiter: '\r\n'}))
 
-  // mensagem no console
-  console.log('Servidor rodando em http://localhost:8080/');
+// servidor escutando na porta 8080
+server.listen(8080);
 
-  // informando a página HTML que será vista pelo usuário
-  app.get('/', function (req, res) {
-    res.sendFile(__dirname + '/exemplo-07-web.html');
+// mensagem no console
+console.log('Servidor rodando em http://localhost:8080/');
+
+
+// informando a página HTML que será vista pelo usuário
+app.get('/', function (req, res) {
+  res.sendFile(__dirname + '/exemplo-07-web.html');
+});
+
+// quando alguém conectar com o servidor por meio de socket
+io.on('connection', function (socket) {
+    
+    // lê o conteúdo da porta serial
+  parser.on('data', function (data) {
+      console.log(data);
+      // enviar resposta da leitura do cartão para a página web
+      socket.emit('respostaRFID', data);
   });
-
-  var multi = new five.Multi({
-    controller: "DHT11_I2C_NANO_BACKPACK"
-  });
-
-  multi.on("change", function() {
-    console.log("Thermometer");
-    console.log("  celsius           : ", this.thermometer.celsius);
-    console.log("  fahrenheit        : ", this.thermometer.fahrenheit);
-    console.log("  kelvin            : ", this.thermometer.kelvin);
-    console.log("--------------------------------------");
-
-    console.log("Hygrometer");
-    console.log("  relative humidity : ", this.hygrometer.relativeHumidity);
-    console.log("--------------------------------------");
-  });
-
-
-}); 
+});
